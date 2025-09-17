@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>BookScan – Honest Book Reviews Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --vy-yellow: #ffe600;
+      --vy-black: #191b1a;
+      --vy-blue: #227aff;
+      --vy-green: #22c770;
+      --vy-red: #ff6c6c;
+    }
+    body {
+      margin: 0; background: var(--vy-yellow);
+      font-family: 'Poppins', Arial, sans-serif;
+      color: var(--vy-black);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 5vw; background: var(--vy-yellow);
+      border-bottom: 3px solid var(--vy-black);}
+    .logo { font-size: 2em; font-weight: 900; letter-spacing: 2px; display: flex; align-items: center;}
+    .logo .scan { margin-left: 13px; background: var(--vy-blue); color: #fff; border-radius: 9px; font-size: 1.08em; font-weight: 900; padding: 2px 20px; border: 3px solid var(--vy-black); box-shadow: 2px 3px var(--vy-black);}
+    .vy-btn { font-size: 1em; font-weight: 900; background: var(--vy-blue); color: #fff; border-radius: 10px; padding: 12px 30px; border: 3px solid var(--vy-black); box-shadow: 2px 3px var(--vy-black); cursor: pointer;}
+    .vy-btn:hover { background: #165bba; transform: scale(1.06);}
+    .tool-hero {max-width: 720px; margin: 65px auto 56px auto; background: #fff; border-radius: 25px; box-shadow: 11px 16px 0 var(--vy-black); border: 4px solid var(--vy-black); padding: 65px 50px 56px 50px; text-align: center;}
+    .search-title { font-size: 2.1em; font-weight: 900; margin-bottom: 20px;}
+    .search-form { display: flex; margin-bottom: 22px;}
+    .book-input { flex: 1; padding: 16px; font-size: 1.13em; border: 4px solid var(--vy-black); border-right: 0; border-radius: 14px 0 0 14px; background: #fffae3; font-weight: 700;}
+    .analyze-btn { padding: 0 32px; background: var(--vy-blue); color: #fff; font-size: 1.09em; font-weight: 900; border: 4px solid var(--vy-black); border-radius: 0 14px 14px 0; box-shadow: 2.5px 3px var(--vy-black);}
+    .analyze-btn:disabled { opacity:.6; cursor:not-allowed;}
+    .lds-ring {display:inline-block;position:relative;width:40px;height:40px;margin:25px auto 15px auto;text-align:center;}
+    .lds-ring div { box-sizing:border-box;display:block;position:absolute;width:32px;height:32px;margin:4px; border:4px solid #227aff; border-radius:50%; animation:lds-ring 1s linear infinite; border-color:#227aff transparent transparent transparent;}
+    .lds-ring div:nth-child(1){animation-delay:-.3s;}
+    .lds-ring div:nth-child(2){animation-delay:-.2s;}
+    .lds-ring div:nth-child(3){animation-delay:-.1s;}
+    @keyframes lds-ring{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    .star-block {margin:25px 0 28px 0; text-align:center;}
+    .star-box { background:#e3f0ff; border:3px solid #227aff; padding:14px 18px; font-size:1.15em; font-weight:900; border-radius:15px; display:inline-block; box-shadow:2px 5px #227aff; margin-bottom:18px;}
+    .star-row {font-size:1.31em;letter-spacing:.05em;color:#227aff;}
+    .verdict-block {padding:18px 22px; background:#eef3fe; border-radius:11px; border:2px solid #227aff; font-weight:800; color:#174376; margin-bottom:25px; box-shadow:1.5px 1.5px #227aff33; font-size:1.09em;}
+    .expand-card {position:relative; border-radius:18px; border:3px solid #22c770; background:#dbfee7; margin-bottom:20px; transition:.22s; overflow:visible;}
+    .expand-card.red {border:3px solid #ff6c6c; background:#ffecec;}
+    .expand-card.yellow {border:3px solid #e2d48d; background:#fffcc7;}
+    .expand-card.open {box-shadow: 0 0 22px #227aff38; border-width:3.5px;}
+    .expand-card.open.red {box-shadow:0 0 22px #ff6c6c33;}
+    .expand-card.open.yellow{box-shadow:0 0 22px #ffe60033;}
+    .card-header {cursor:pointer; font-weight:900; font-size:1.18em; display:flex;align-items:center;justify-content:space-between; padding:17px 17px 15px 24px; background:#fff; border-bottom:1.8px solid #22c770; border-radius: 14px 14px 0 0;}
+    .expand-card.red .card-header { border-bottom-color: #ff6c6c; color:#fa5555;}
+    .expand-card.yellow .card-header { border-bottom-color: #e2d48d; color: #ae880e;}
+    .expand-card.open .card-header { background:#e6f2fe;}
+    .card-header .toggle-arrow {font-size:1.38em; margin-left:22px; display:inline-block; color:#222; line-height:1; transition:transform .25s, color .14s;}
+    .expand-card.open .card-header .toggle-arrow { transform: rotate(180deg);}
+    .expand-card.open .card-header .toggle-arrow { color: var(--vy-blue);}
+    .card-content { padding: 18px 25px 18px 33px; font-size:1.05em; display:none;}
+    .expand-card.open .card-content { display:block; animation:fadeIn .21s;}
+    @keyframes fadeIn {from{opacity:0;} to{opacity:1;}}
+    .sources-box {margin:25px 1vw 10px 0; text-align:right; font-size:1em; color:#227aff;}
+    @media (max-width:900px){ .tool-hero{max-width:99vw;padding:32px 3vw 34px 3vw;} }
+    @media (max-width:700px){
+      .tool-hero{padding:14px 2vw;} .expand-card,.expand-card.open{font-size:.98em;}
+      .verdict-block, .star-box { font-size:.99em;}
+      .card-header{padding:12px 14px 10px 17px;}
+      .card-content{padding:10px 7vw 13px 7vw;}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="logo">BOOK <span class="scan">SCAN</span></div>
+    <button class="vy-btn" onclick="window.location.href='/'">Home</button>
+  </nav>
+  <div class="tool-hero">
+    <div class="search-title">Instant AI-powered book reviews</div>
+    <form class="search-form" onsubmit="event.preventDefault(); analyze();">
+      <input type="text" id="bookTitle" class="book-input" autocomplete="off" autofocus placeholder="Enter book name...">
+      <button class="analyze-btn" id="analyze-btn" type="submit">Analyze</button>
+    </form>
+    <div id="result"></div>
+  </div>
+  <script>
+    function starBar(stars, label) {
+      let out = '';
+      for (let i = 0; i < 20; i++)
+        out += i < stars ? '★' : '☆';
+      return `<div class="star-box"><div class="star-row">${out}</div><div style="margin-top:8px;font-weight:800;">${label}</div></div>`;
+    }
+    function panelCard({color='',header,content,open=false}) {
+      return `<div class="expand-card${color ? ' '+color : ''}${open ? ' open' : ''}">
+        <div class="card-header" onclick="togglePanel(this)">
+          <span>${header}</span>
+          <span class="toggle-arrow">▼</span>
+        </div>
+        <div class="card-content">${content}</div>
+      </div>`;
+    }
+    function toList(arr) { return `<ul>${(arr||[]).map(x=>'<li>'+x+'</li>').join('')}</ul>`; }
+    function toBoldList(arr) { return `<ul>${(arr||[]).map(x=>'<li><b>'+x+'</b></li>').join('')}</ul>`; }
+    function analyze() {
+      const title = document.getElementById('bookTitle').value.trim();
+      const resultBox = document.getElementById('result');
+      const btn = document.getElementById('analyze-btn');
+      if (!title) return;
+      resultBox.innerHTML = `<div style="text-align:center"><div class="lds-ring"><div></div><div></div><div></div><div></div></div><p style="margin-top:10px;font-size:1.10em;color:#227aff;font-weight:900;">Analyzing... Please wait</p></div>`;
+      btn.disabled = true;
+      fetch('/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ book_title: title })
+      })
+      .then(r => r.json())
+      .then(data => {
+        resultBox.innerHTML =
+          `<div style="font-size:2em;font-weight:900;color:#227aff;text-align:center;margin:22px 0 10px 0;">${data.book_title}</div>
+           <div class="star-block">${starBar(data.star_rating||0, data.star_label||'')}</div>
+           <div class="verdict-block">${data.verdict || data.analysis}</div>
+           ${panelCard({ color:'', header:'👍 What Readers Liked', content: toList(data.likes), open:false })}
+           ${panelCard({ color:'red', header:'👎 What Readers Disliked', content: toList(data.dislikes), open:false })}
+           ${panelCard({ color:'yellow', header:'🎯 Best For', content: toBoldList(data.best_for), open:false })}
+           <div class="sources-box">
+             Resources: <a href="https://www.goodreads.com/search?q=${encodeURIComponent(data.book_title)}" target="_blank">Goodreads reviews</a>
+           </div>`;
+        btn.disabled = false;
+        window.scrollTo({top: document.getElementById('result').offsetTop-100, behavior:'smooth'});
+      })
+      .catch(() => {
+        resultBox.innerHTML = `<div class="verdict-block" style="color:#ff0000;">Error: Could not fetch review for this book. Try again or check your connection.</div>`;
+        btn.disabled = false;
+      });
+    }
+    function togglePanel(header) {
+      const card = header.closest('.expand-card');
+      card.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

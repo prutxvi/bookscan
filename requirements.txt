@@ -1,0 +1,8 @@
+groq
+flask
+beautifulsoup4
+requests
+opencv-python
+pytesseract
+pillow
+python-dotenv

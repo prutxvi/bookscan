@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>BookScan – Honest Book Reviews, Instantly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --vy-yellow: #ffe600;
+      --vy-black: #191b1a;
+      --vy-blue: #227aff;
+    }
+
+    body {
+      margin: 0;
+      background: var(--vy-yellow);
+      font-family: 'Poppins', Arial, sans-serif;
+      min-height: 100vh;
+      color: var(--vy-black);
+      overflow-x: hidden;
+    }
+
+    /* NAVIGATION */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 6vw 13px 6vw;
+      position: sticky;
+      top: 0;
+      background: var(--vy-yellow);
+      z-index: 100;
+      box-shadow: 0 3px 0 var(--vy-black);
+    }
+
+    .nav .logo {
+      font-size: 2.2em;
+      font-weight: 900;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav .logo .scan {
+      margin-left: 12px;
+      background: var(--vy-blue);
+      color: #fff;
+      border-radius: 9px;
+      font-size: 1.1em;
+      font-weight: 900;
+      padding: 4px 22px;
+      border: 3px solid var(--vy-black);
+      box-shadow: 2px 3px var(--vy-black);
+      transition: transform .15s ease;
+    }
+
+    .nav .logo .scan:hover {
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    /* BUTTONS */
+    .vy-btn,
+    .main-btn {
+      font-size: 1.1em;
+      font-weight: 900;
+      background: var(--vy-blue);
+      color: #fff;
+      border-radius: 14px;
+      padding: 14px 38px;
+      border: 3px solid var(--vy-black);
+      box-shadow: 3px 4px var(--vy-black);
+      letter-spacing: .7px;
+      cursor: pointer;
+      transition: background .15s, box-shadow .15s, transform .12s;
+    }
+
+    .vy-btn:hover,
+    .main-btn:hover {
+      background: #165bba;
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 5px 7px var(--vy-black);
+    }
+
+    /* HERO SECTION */
+    .main-hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      padding: 0 8vw;
+      gap: 60px;
+    }
+
+    .main-left {
+      max-width: 620px;
+      animation: fadeInUp 0.9s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Arial Black', Arial, sans-serif;
+      font-size: 3.5em;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: .3em;
+      line-height: 1.08;
+    }
+
+    .hero-title .hl {
+      color: var(--vy-blue);
+      display: inline;
+      text-shadow: -2px 2px var(--vy-yellow), 3px 3px var(--vy-black);
+    }
+
+    .hero-desc {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: #2a2a2a;
+      margin-bottom: 2.2em;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .main-btn {
+      padding: 18px 52px;
+      font-size: 1.18em;
+      box-shadow: 4px 5px var(--vy-black);
+    }
+
+    /* HERO EMOJIS */
+    .main-emoji {
+      font-size: 6em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .main-emoji span {
+      font-size: 1.4em;
+      margin-top: .15em;
+      color: var(--vy-black);
+      text-shadow: 3px 3px #fff;
+    }
+
+    /* ANIMATIONS */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width:1100px) {
+      .main-hero { gap: 40px; }
+      .hero-title { font-size: 2.5em; }
+    }
+
+    @media (max-width:800px) {
+      .main-hero {
+        flex-direction: column-reverse;
+        min-height: unset;
+        padding: 40px 6vw;
+        text-align: center;
+      }
+      .main-left { max-width: 95vw; }
+      .hero-title { font-size: 1.8em; }
+      .hero-desc { font-size: 1.1em; }
+      .main-emoji { margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="logo">BOOK <span class="scan">SCAN</span></div>
+    <button class="vy-btn" onclick="window.location.href='/scan'">Get Started</button>
+  </nav>
+
+  <main>
+    <section class="main-hero">
+      <div class="main-left">
+        <div class="hero-title">
+          THE FASTEST WAY TO GET <span class="hl">HONEST<br>BOOK REVIEWS</span>
+        </div>
+        <div class="hero-desc">
+          Instantly discover what real readers think, with powerful AI summaries that cut straight to the truth.
+        </div>
+        <button class="main-btn" onclick="window.location.href='/scan'">Try BookScan Now</button>
+      </div>
+      <div class="main-emoji">
+        <span>📖</span>
+        <span>🤖</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
