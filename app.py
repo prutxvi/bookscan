@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import os
 from dotenv import load_dotenv
 from groq import Groq
+import time
 from goodreads_scraper import fetch_goodreads_reviews
 import re
 import json
@@ -57,18 +58,55 @@ Here are live user reviews:
 {chr(10).join(reviews)}
     """
 
-    completion = client.chat.completions.create(
-        messages=[{"role": "user", "content": prompt}],
-        model="llama-3.3-70b-versatile",
-    )
+    # Call LLM with a small retry loop and defensive extraction of the text
+    completion = None
+    output = ""
+    last_exc = None
+    for attempt in range(2):
+        try:
+            completion = client.chat.completions.create(
+                messages=[{"role": "user", "content": prompt}],
+                model="llama-3.3-70b-versatile",
+            )
+            # Defensive: many SDKs return different shapes; try to extract safely
+            try:
+                output = completion.choices[0].message.content
+            except Exception:
+                try:
+                    # Some SDKs use 'text' or str(completion)
+                    output = getattr(completion, 'text', None) or str(completion)
+                except Exception:
+                    output = str(completion)
+            break
+        except Exception as e:
+            last_exc = e
+            print(f"LLM call failed (attempt {attempt+1}): {e}")
+            time.sleep(1)
 
-    output = completion.choices[0].message.content
+    if not output:
+        # LLM didn't return usable content — return debug info so you can paste it here
+        return jsonify({
+            'book_title': book_title,
+            'purpose': '',
+            'verdict': '',
+            'star_rating': 0,
+            'star_label': '',
+            'likes': [],
+            'dislikes': [],
+            'best_for': [],
+            'avoid_if': [],
+            'tags': [],
+            'analysis': 'No LLM output',
+            'llm_exception': str(last_exc),
+            'completion_raw': str(completion)[:3000],
+        })
+
     try:
         json_match = re.search(r'\{[\s\S]*\}', output)
         if json_match:
             data = json.loads(json_match.group())
         else:
-            raise ValueError("No JSON found.")
+            raise ValueError("No JSON found in LLM output")
         # Defensive: ensure all keys present and correct
         keys = ["book_title","purpose","verdict","star_rating","star_label",
                 "likes","dislikes","best_for","avoid_if","tags","analysis"]
@@ -82,6 +120,8 @@ Here are live user reviews:
         except: data["star_rating"] = 0
         return jsonify(data)
     except Exception as e:
+        # Parsing failed — return the raw LLM output and the parsing exception for debugging
+        print("Failed to parse JSON from LLM output:", e)
         return jsonify({
             'book_title': book_title,
             'purpose': '',
@@ -94,6 +134,9 @@ Here are live user reviews:
             'avoid_if': [],
             'tags': [],
             'analysis': output[:1500],
+            'llm_output': output,
+            'llm_exception': str(e),
+            'completion_raw': str(completion)[:3000],
         })
 
 if __name__ == '__main__':
