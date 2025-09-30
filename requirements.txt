@@ -6,3 +6,4 @@ opencv-python
 pytesseract
 pillow
 python-dotenv
+gunicorn
